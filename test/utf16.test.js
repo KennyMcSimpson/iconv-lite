@@ -313,6 +313,16 @@ describe("UTF-16 encoder #node-web", function () {
     }
   })
 
+  it("preserves inherited encoding options", function () {
+    class Options {
+      get addBOM () { return false }
+    }
+    for (const options of [Object.create({ addBOM: false }), new Options()]) {
+      assert.equal(hex(iconv.encode(testStr, enc, options)), hex(utf16leBuf))
+      assert.deepStrictEqual(Object.keys(options), [])
+    }
+  })
+
   it("can skip BOM", function () {
     assert.equal(hex(iconv.encode(testStr, enc, { addBOM: false })), hex(utf16leBuf))
   })

@@ -200,6 +200,18 @@ describe("UTF-32 general codec #node-web", function () {
     }
   })
 
+  it("preserves inherited encoding options", function () {
+    class Options {
+      get addBOM () { return false }
+      get defaultEncoding () { return "utf-32be" }
+    }
+    const inherited = Object.create({ addBOM: false, defaultEncoding: "utf-32be" })
+    for (const options of [inherited, new Options()]) {
+      assert.equal(hex(iconv.encode(testStr, "utf-32", options)), hex(utf32beBuf))
+      assert.deepStrictEqual(Object.keys(options), [])
+    }
+  })
+
   it("doesn't add a BOM and uses UTF-32BE when specified", function () {
     assert.equal(hex(iconv.encode(testStr, "ucs4", { addBOM: false, defaultEncoding: "ucs4be" })), hex(utf32beBuf))
   })

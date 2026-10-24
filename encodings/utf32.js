@@ -304,7 +304,7 @@ function stringFromUnits (units, length) {
  */
 class Utf32Codec {
   createEncoder (options, iconv) {
-    options = { ...options }
+    options = { ...options, addBOM: options?.addBOM, defaultEncoding: options?.defaultEncoding }
     if (options.addBOM === undefined) { options.addBOM = true }
     return iconv.getEncoder(options.defaultEncoding || "utf-32le", options)
   }
