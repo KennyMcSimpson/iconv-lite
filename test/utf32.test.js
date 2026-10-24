@@ -181,6 +181,25 @@ describe("UTF-32 general codec #node-web", function () {
     assert.equal(hex(iconv.encode(testStr, "utf-32")), hex(utf32leBufWithBOM))
   })
 
+  it("doesn't change encoding options reused for other encodings", function () {
+    const options = {}
+    assert.equal(hex(iconv.encode(testStr, "utf-32", options)), hex(utf32leBufWithBOM))
+    assert.equal(hex(iconv.encode("A", "utf8", options)), "41")
+    assert.deepStrictEqual(options, {})
+  })
+
+  it("accepts frozen encoding options when adding the default BOM", function () {
+    assert.equal(hex(iconv.encode(testStr, "utf-32", Object.freeze({}))), hex(utf32leBufWithBOM))
+  })
+
+  it("honors explicit BOM settings in frozen encoding options", function () {
+    for (const addBOM of [false, true]) {
+      const expected = addBOM ? utf32beBufWithBOM : utf32beBuf
+      const options = Object.freeze({ addBOM, defaultEncoding: "utf-32be" })
+      assert.equal(hex(iconv.encode(testStr, "utf-32", options)), hex(expected))
+    }
+  })
+
   it("doesn't add a BOM and uses UTF-32BE when specified", function () {
     assert.equal(hex(iconv.encode(testStr, "ucs4", { addBOM: false, defaultEncoding: "ucs4be" })), hex(utf32beBuf))
   })
