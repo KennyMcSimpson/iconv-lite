@@ -192,9 +192,9 @@ describe("UTF-32 general codec #node-web", function () {
     assert.equal(hex(iconv.encode(testStr, "utf-32", Object.freeze({}))), hex(utf32leBufWithBOM))
   })
 
-  it("honors explicit BOM settings in frozen encoding options", function () {
-    for (const addBOM of [false, true]) {
-      const expected = addBOM ? utf32beBufWithBOM : utf32beBuf
+  it("honors BOM defaults and explicit settings in frozen encoding options", function () {
+    for (const [addBOM, includeBOM] of [[undefined, true], [null, false], [false, false], [true, true]]) {
+      const expected = includeBOM ? utf32beBufWithBOM : utf32beBuf
       const options = Object.freeze({ addBOM, defaultEncoding: "utf-32be" })
       assert.equal(hex(iconv.encode(testStr, "utf-32", options)), hex(expected))
     }

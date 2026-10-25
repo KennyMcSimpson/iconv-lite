@@ -306,9 +306,9 @@ describe("UTF-16 encoder #node-web", function () {
     assert.equal(hex(iconv.encode(testStr, enc, Object.freeze({}))), hex(utf16leBOM) + " " + hex(utf16leBuf))
   })
 
-  it("honors explicit BOM settings in frozen encoding options", function () {
-    for (const addBOM of [false, true]) {
-      const expected = (addBOM ? hex(utf16leBOM) + " " : "") + hex(utf16leBuf)
+  it("honors BOM defaults and explicit settings in frozen encoding options", function () {
+    for (const [addBOM, includeBOM] of [[undefined, true], [null, false], [false, false], [true, true]]) {
+      const expected = (includeBOM ? hex(utf16leBOM) + " " : "") + hex(utf16leBuf)
       assert.equal(hex(iconv.encode(testStr, enc, Object.freeze({ addBOM }))), expected)
     }
   })
